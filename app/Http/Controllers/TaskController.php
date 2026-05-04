@@ -7,7 +7,7 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
-    //Fitur Read [GET]
+    // Fitur Read [GET] - Punya Akbar
     public function index()
     {
         $tasks = Task::all();
@@ -18,21 +18,33 @@ class TaskController extends Controller
         ], 200);
     }
 
-    //Fitur Delete [DELETE]
+    // Fitur Create [POST] - Punya Rifqy
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255'
+        ]);
+
+        $task = Task::create([
+            'title' => $request->title
+        ]);
+
+        return response()->json([
+            'message' => 'Task berhasil ditambahkan!',
+            'data' => $task
+        ], 201);
+    }
+
+    // Fitur Delete [DELETE] - Punya Akbar
     public function destroy($id)
     {
         $task = Task::find($id);
-
-        if (!$task) {
-            return response()->json([
-                'message' => 'Task tidak ditemukan'
-            ], 404);
+        
+        if ($task) {
+            $task->delete();
+            return response()->json(['message' => 'Task berhasil dihapus']);
         }
-
-        $task->delete();
-
-        return response()->json([
-            'message' => 'Task berhasil dihapus'
-        ], 200);
+        
+        return response()->json(['message' => 'Task tidak ditemukan'], 404);
     }
 }
